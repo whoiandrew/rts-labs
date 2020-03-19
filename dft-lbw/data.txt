@@ -1,0 +1,1 @@
+DFT calculting time: 0.03844618797302246 sec
