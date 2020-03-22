@@ -2,6 +2,7 @@ from math import *
 from cmath import exp, pi
 import random
 from time import time
+import numpy as np
 
 w = 2000  # cutoff frequency
 n = 8  # number of sine waves
@@ -22,13 +23,12 @@ def time_counter(callback, *args):
     return end - start
 
 
-
 def file_writer(data: str, path: str):
     with open(path, "w+") as file_handler:
         file_handler.write(data)
 
 
-def output(name:str, values, plot_path: str):
+def output(name: str, values, plot_path: str):
     import matplotlib.pyplot as plt
     # generating and saving plots as a .png
     fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2)
@@ -63,17 +63,28 @@ def fft(x):
     t = [exp(-2j * pi * k / n) * odd[k] for k in range(n // 2)]
     return [even[k] + t[k] for k in range(n // 2)] + [even[k] - t[k] for k in range(n // 2)]
 
+
+# additional task
+# implement matrix method, compare execution time with fft
+# DFT and FFT time comparing was already implemented
+def dft_matrix(w):
+    i, j = np.meshgrid(np.arange(N), np.arange(N))
+    return np.power(np.exp(- 2 * pi * 1J / N), i * j) / sqrt(N)
+
+
 if __name__ == "__main__":
     my_signal = [sum([signal(i, (w * j) / n, amplitude, phi) for j in range(n)]) for i in range(N)]
     my_dft = dft(my_signal)
     my_fft = fft(my_signal)
-
     output("DFT", my_dft, DFT_PLOT_PATH)
     output("FFT", my_fft, FFT_PLOT_PATH)
+    # I have added here a few lines of code here to compare dft_matrix and fft and write it into a .txt file
     file_writer(
         f"DFT calculating time: {time_counter(dft, my_signal)} sec\n"
+        f"DFT (matrix method) calculating time: {time_counter(dft_matrix, len(my_signal))} sec\n"
         f"FFT calculating time: {time_counter(fft, my_signal)} sec\n\n"
-        f"{'FFT ' if time_counter(fft, my_signal) < time_counter(dft, my_signal) else 'DFT'} is faster",
+        f"{'FFT' if time_counter(fft, my_signal) < time_counter(dft, my_signal) else 'DFT'} is faster than "
+        f"{'FFT' if time_counter(fft, my_signal) >= time_counter(dft, my_signal) else 'DFT'}\n"
+        f"{'FFT' if time_counter(fft, my_signal) < time_counter(dft_matrix, len(my_signal)) else 'DFT matrix'} is faster than "
+        f"{'FFT' if time_counter(fft, my_signal) >= time_counter(dft_matrix, len(my_signal)) else 'DFT matrix'}",
         DATA_PATH)
-
-

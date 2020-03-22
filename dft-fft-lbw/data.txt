@@ -1,4 +1,6 @@
-DFT calculating time: 0.035294532775878906 sec
-FFT calculating time: 0.0008573532104492188 sec
+DFT calculating time: 0.03312802314758301 sec
+DFT (matrix method) calculating time: 0.01761913299560547 sec
+FFT calculating time: 0.0009243488311767578 sec
 
-FFT  is faster
+FFT is faster than DFT
+FFT is faster than DFT matrix
